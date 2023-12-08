@@ -1,7 +1,23 @@
 import os
 import openai
+import yaml
 
-os.environ["OPENAI_API_KEY"] = "" # 환경변수에 OPENAI_API_KEY를 설정합니다.
+#Loading config from yaml
+def load_env_from_yaml(file_path='./config.yaml'):
+    try:
+        with open(file_path, 'r') as file:
+            config_data = yaml.safe_load(file)
+
+        if config_data and isinstance(config_data, dict):
+            for key, value in config_data.items():
+                os.environ[key] = str(value)
+
+        print(f"환경변수가 '{file_path}' 파일에서 로드되었습니다.")
+    except FileNotFoundError:
+        print(f"파일 '{file_path}'을 찾을 수 없습니다.")
+
+load_env_from_yaml()
+os.environ["OPENAI_API_KEY"] = os.environ.get("GPT_API_KEY") # 환경변수에 OPENAI_API_KEY를 설정합니다.
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 system_prompt = """
